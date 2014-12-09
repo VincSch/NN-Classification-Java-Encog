@@ -37,39 +37,53 @@ public class SimpleXOR {
      */
     public static double XOR_IDEAL[][] = {{0.0}, {1.0}, {1.0}, {0.0}};
 
-    public void runXOR() {
+    public boolean runXOR() {
 
-        // create a neural network, without using a factory
-        BasicNetwork network = new BasicNetwork();
-        network.addLayer(new BasicLayer(null, true, 2));
-        network.addLayer(new BasicLayer(new ActivationSigmoid(), true, 3));
-        network.addLayer(new BasicLayer(new ActivationSigmoid(), false, 1));
-        network.getStructure().finalizeStructure();
-        network.reset();
+        try {
+            // create a neural network, without using a factory
+            BasicNetwork network = new BasicNetwork();
+            network.addLayer(new BasicLayer(null, true, 2));
+            network.addLayer(new BasicLayer(new ActivationSigmoid(), true, 3));
+            network.addLayer(new BasicLayer(new ActivationSigmoid(), false, 1));
+            network.getStructure().finalizeStructure();
+            network.reset();
 
-        // create training data
-        MLDataSet trainingSet = new BasicMLDataSet(XOR_INPUT, XOR_IDEAL);
+            // create training data
+            MLDataSet trainingSet = new BasicMLDataSet(XOR_INPUT, XOR_IDEAL);
 
-        // train the neural network
-        final ResilientPropagation train = new ResilientPropagation(network, trainingSet);
+            // train the neural network
+            final ResilientPropagation train = new ResilientPropagation(network, trainingSet);
 
-        int epoch = 1;
+            int epoch = 1;
 
-        do {
-            train.iteration();
-            log.info("Epoch #" + epoch + " Error:" + train.getError());
-            epoch++;
-        } while (train.getError() > 0.01);
-        train.finishTraining();
+            do {
+                train.iteration();
+                log.info("Epoch #" + epoch + " Error:" + train.getError());
+                double[] weights = train.getCurrentFlatNetwork().getWeights();
+                StringBuffer buffer = new StringBuffer();
+                for(int i = 0; i <= weights.length-1; i++) {
+                    buffer.append(String.valueOf(weights[i]) + ",");
+                }
+                log.info(buffer.toString());
+                epoch++;
+            } while (train.getError() > 0.01);
+            train.finishTraining();
 
-        // test the neural network
-        log.info("Neural Network Results:");
-        for (MLDataPair pair : trainingSet) {
-            final MLData output = network.compute(pair.getInput());
-            log.info(pair.getInput().getData(0) + "," + pair.getInput().getData(1)
-                    + ", actual=" + output.getData(0) + ",ideal=" + pair.getIdeal().getData(0));
+            // test the neural network
+            log.info("Neural Network Results:");
+            for (MLDataPair pair : trainingSet) {
+                final MLData output = network.compute(pair.getInput());
+                log.info(pair.getInput().getData(0) + "," + pair.getInput().getData(1)
+                        + ", actual=" + output.getData(0) + ",ideal=" + pair.getIdeal().getData(0));
+            }
+
+            Encog.getInstance().shutdown();
+        }catch(Exception ex){
+            log.error(ex.getMessage());
+            ex.printStackTrace();
+            return false;
         }
 
-        Encog.getInstance().shutdown();
+        return true;
     }
 }

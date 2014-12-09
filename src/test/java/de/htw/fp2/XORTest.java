@@ -1,19 +1,32 @@
 package de.htw.fp2;
 
+import de.htw.fp2.common.BaseTester;
+import junit.framework.Assert;
 import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by vs on 09.12.14.
  */
-public class XORTest {
+public class XORTest extends BaseTester {
 
-    private static Logger log = Logger.getLogger(XORTest.class.getName());
+    @Before
+    public void setup(){
+        printStartTest(this.getClass().getCanonicalName());
+    }
+
+    @After
+    public void tearDown(){
+        printEndTest(this.getClass().getCanonicalName());
+    }
 
     @Test
     public void testNetwork() {
         SimpleXOR xor = new SimpleXOR();
-        xor.runXOR();
-        log.info("========Test run Done ==========");
+        assertTrue("Training should run without any Exceptions", xor.runXOR());
     }
 }
