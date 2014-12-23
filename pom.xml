@@ -10,7 +10,8 @@
 
     <dependencies>
         <!--***************************************************************************
-        NN DEPENDENCIES *************************************************************************** -->
+        NN DEPENDENCIES
+        *************************************************************************** -->
 
         <dependency>
             <groupId>org.encog</groupId>
@@ -19,7 +20,8 @@
         </dependency>
 
         <!--***************************************************************************
-            PERSISTENCE DEPENDENCIES *************************************************************************** -->
+            PERSISTENCE DEPENDENCIES
+            *************************************************************************** -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
@@ -42,13 +44,13 @@
 
 
         <!--***************************************************************************
-            UTILITY DEPENDENCIES *************************************************************************** -->
+            UTILITY DEPENDENCIES
+            *************************************************************************** -->
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>2.6</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -56,8 +58,15 @@
             <version>3.3</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20140107</version>
+        </dependency>
+
         <!--***************************************************************************
-            LOGGING DEPENDENCIES *************************************************************************** -->
+            LOGGING DEPENDENCIES
+            *************************************************************************** -->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -66,7 +75,8 @@
 
 
         <!--***************************************************************************
-            TEST DEPENDENCIES *************************************************************************** -->
+            TEST DEPENDENCIES
+            *************************************************************************** -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -84,8 +94,8 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
         </plugins>
