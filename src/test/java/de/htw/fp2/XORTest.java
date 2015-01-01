@@ -1,8 +1,7 @@
 package de.htw.fp2;
 
 import de.htw.fp2.common.BaseTester;
-import junit.framework.Assert;
-import org.apache.log4j.Logger;
+import de.htw.fp2.examples.SimpleXOR;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

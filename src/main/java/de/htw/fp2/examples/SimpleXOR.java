@@ -1,4 +1,4 @@
-package de.htw.fp2;
+package de.htw.fp2.examples;
 
 import org.apache.log4j.Logger;
 import org.encog.Encog;
@@ -55,7 +55,6 @@ public class SimpleXOR {
             final ResilientPropagation train = new ResilientPropagation(network, trainingSet);
 
             int epoch = 1;
-
             do {
                 train.iteration();
                 log.info("Epoch #" + epoch + " Error:" + train.getError());
@@ -64,6 +63,10 @@ public class SimpleXOR {
                 for(int i = 0; i <= weights.length-1; i++) {
                     buffer.append(String.valueOf(weights[i]) + ",");
                 }
+                // get weigths from Layer x neuron x to layer y neuron y
+                //TODO
+                //network.getWeight()
+
                 log.info(buffer.toString());
                 epoch++;
             } while (train.getError() > 0.01);

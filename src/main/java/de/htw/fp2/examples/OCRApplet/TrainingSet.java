@@ -1,7 +1,4 @@
-package de.htw.fp2.OCRApplet;
-
-import java.io.*;
-import java.util.*;
+package de.htw.fp2.examples.OCRApplet;
 
 /**
  * Java Neural Network Example Handwriting Recognition 

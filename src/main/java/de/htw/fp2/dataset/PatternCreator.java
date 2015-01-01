@@ -1,5 +1,4 @@
 package de.htw.fp2.dataset;
-
 import org.json.JSONArray;
 
 import java.io.BufferedReader;

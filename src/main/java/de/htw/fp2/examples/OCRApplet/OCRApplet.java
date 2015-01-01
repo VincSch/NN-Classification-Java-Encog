@@ -1,4 +1,4 @@
-package de.htw.fp2.OCRApplet;
+package de.htw.fp2.examples.OCRApplet;
 
 import java.applet.Applet;
 import java.awt.*;
