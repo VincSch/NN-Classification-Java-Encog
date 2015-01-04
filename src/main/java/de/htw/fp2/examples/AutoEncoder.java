@@ -1,5 +1,6 @@
 package de.htw.fp2.examples;
 
+import de.htw.fp2.common.Constants;
 import de.htw.fp2.dataset.Pattern;
 import de.htw.fp2.dataset.PatternCreator;
 import de.htw.fp2.util.ArrayUtil;
@@ -23,15 +24,15 @@ import java.util.List;
  */
 public class AutoEncoder {
 
-    private static Logger log = Logger.getLogger(AutoEncoder.class.getName());
+    private Logger log = Logger.getLogger(AutoEncoder.class.getName());
 
-    public static void main(String[] args) {
+    public boolean run() {
         // create training data
         MLDataSet trainingSet = new BasicMLDataSet();
         List<Pattern> patterns = new ArrayList<>();
         try {
             patterns = PatternCreator
-                .readFrom(new File("src/main/resources/dataset/input.nn"));
+                    .readFrom(new File("src/main/resources/dataset/input.nn"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -40,22 +41,22 @@ public class AutoEncoder {
             String input = "";
             for (int i = 0; i < patterns.size(); i++) {
                 BasicMLData inputData = new BasicMLData(
-                    patterns.get(i).getFlat());
+                        patterns.get(i).getFlat());
                 trainingSet.add(inputData, inputData);
                 input += patterns.get(i).toString() + "\n";
                 double[][] inPattern = patterns.get(i).getDoubleValue();
                 ImageCreator
-                    .createGrayScale(new File("input" + i + ".bmp"), inPattern);
+                        .createGrayScale(new File(Constants.INPUTDIR + "input" + i + ".bmp"), inPattern);
             }
         } catch (IOException e) {
             log.error(e);
         }
         de.htw.fp2.network.AutoEncoder encoder =
-            new de.htw.fp2.network.AutoEncoder(9, 32);
+                new de.htw.fp2.network.AutoEncoder(9, 32);
 
         // train the neural network
         final ResilientPropagation train = new ResilientPropagation(encoder,
-            trainingSet);
+                trainingSet);
         int epoch = 1;
 
         do {
@@ -92,14 +93,14 @@ public class AutoEncoder {
             int[][] outPattern = ArrayUtil.toMatrix(out, 3);
             try {
                 ImageCreator
-                    .createGrayScale(new File("output" + i + ".bmp"),
-                        outPattern);
+                        .createGrayScale(new File(Constants.OUTPUTDIR + "output" + i + ".bmp"),
+                                outPattern);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
         Encog.getInstance().shutdown();
-
+        return true;
     }
 }

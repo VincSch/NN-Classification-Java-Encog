@@ -1,5 +1,6 @@
 package de.htw.fp2.examples;
 
+import de.htw.fp2.common.Constants;
 import de.htw.fp2.dataset.Pattern;
 import de.htw.fp2.dataset.PatternCreator;
 import de.htw.fp2.train.LayerWiseTrainer;
@@ -23,15 +24,15 @@ import java.util.List;
  */
 public class StackedAutoEncoder {
 
-    private static Logger log = Logger
-        .getLogger(StackedAutoEncoder.class.getName());
+    private Logger log = Logger
+            .getLogger(StackedAutoEncoder.class.getName());
 
-    public static void main(String[] args) {
+    public boolean run() {
         // create training data
         List<Pattern> patterns = new ArrayList<>();
         try {
             patterns = PatternCreator
-                .readFrom(new File("src/main/resources/dataset/input.nn"));
+                    .readFrom(new File("src/main/resources/dataset/input.nn"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -46,7 +47,7 @@ public class StackedAutoEncoder {
                 input += patterns.get(i).toString() + "\n";
                 double[][] inPattern = patterns.get(i).getDoubleValue();
                 ImageCreator
-                    .createGrayScale(new File("input" + i + ".bmp"), inPattern);
+                        .createGrayScale(new File(Constants.INPUTDIR + "input" + i + ".bmp"), inPattern);
             }
         } catch (IOException e) {
             log.error(e);
@@ -62,7 +63,7 @@ public class StackedAutoEncoder {
 
         // train the neural network
         final LayerWiseTrainer train = new LayerWiseTrainer(encoder, inputData,
-            idealData);
+                idealData);
         train.train();
         train.fineTune();
 
@@ -70,16 +71,17 @@ public class StackedAutoEncoder {
         log.info("Neural Network Results:");
         for (int i = 0; i < inputData.length; i++) {
             final MLData output = encoder
-                .compute(new BasicMLData(inputData[i]));
+                    .compute(new BasicMLData(inputData[i]));
             log.info(Math.round(output.getData(0)) + ","
-                + Math.round(output.getData(1)) + ","
-                + Math.round(output.getData(2)) + ",");
+                    + Math.round(output.getData(1)) + ","
+                    + Math.round(output.getData(2)) + ",");
 
         }
         Encog.getInstance().shutdown();
+        return true;
     }
 
-    private static double[] toBitArray(int decimal) {
+    private double[] toBitArray(int decimal) {
         double[] bitArray = new double[3];
         for (int i = bitArray.length - 1; i >= 0; i--) {
             double exp = Math.pow(2, i);

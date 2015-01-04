@@ -37,7 +37,7 @@ public class SimpleXOR {
      */
     public static double XOR_IDEAL[][] = {{0.0}, {1.0}, {1.0}, {0.0}};
 
-    public boolean runXOR() {
+    public boolean run() {
 
         try {
             // create a neural network, without using a factory
