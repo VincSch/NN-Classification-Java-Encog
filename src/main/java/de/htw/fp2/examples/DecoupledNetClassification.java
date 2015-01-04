@@ -31,7 +31,8 @@ public class DecoupledNetClassification {
     public boolean run() {
         MLDataSet trainingSet = new BasicMLDataSet();
         List<Pattern> patterns = new ArrayList<>();
-        List<Pattern> idealOutputPattern = new ArrayList<>();
+        List<Pattern> idealOutputPatterns = new ArrayList<>();
+        List<Pattern> testNoisyPatterns = new ArrayList<>();
         try {
             patterns = PatternCreator
                     .readFrom(new File("src/main/resources/dataset/input.nn"));
@@ -40,11 +41,18 @@ public class DecoupledNetClassification {
         }
 
         try {
-            idealOutputPattern = PatternCreator
+            idealOutputPatterns = PatternCreator
                     .readFrom(new File("src/main/resources/dataset/idealOutput.nn"));
         } catch (Exception e) {
             e.printStackTrace();
         }
+        try {
+            testNoisyPatterns = PatternCreator
+                    .readFrom(new File("src/main/resources/dataset/testData.nn"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
 
         String input = "";
@@ -53,14 +61,12 @@ public class DecoupledNetClassification {
                     patterns.get(i).getFlat());
 
             BasicMLData outputData = new BasicMLData(
-                    idealOutputPattern.get(i).getFlat());
+                    idealOutputPatterns.get(i).getFlat());
 
             trainingSet.add(inputData, outputData);
         }
 
         DecoupledNet decoupledNet = createNet();
-        decoupledNet.getStructure().finalizeStructure();
-        decoupledNet.reset();
 
         // train the neural network
         final ResilientPropagation train = new ResilientPropagation(decoupledNet,
@@ -76,7 +82,22 @@ public class DecoupledNetClassification {
 
         // test the neural network
         log.info("Neural Network Results:");
+        log.info("Learned examples:");
         for (MLDataPair pair : trainingSet) {
+            final MLData output = decoupledNet.compute(pair.getInput());
+            log.info(printResult(pair, output));
+        }
+
+        log.info("New examples with noise:");
+        MLDataSet noisyTrainingSet = new BasicMLDataSet();
+        for (int i = 0; i < testNoisyPatterns.size(); i++) {
+            BasicMLData inputData = new BasicMLData(
+                    testNoisyPatterns.get(i).getFlat());
+            BasicMLData outputData = new BasicMLData(
+                    idealOutputPatterns.get(i).getFlat());
+            noisyTrainingSet.add(inputData, outputData);
+        }
+        for (MLDataPair pair : noisyTrainingSet) {
             final MLData output = decoupledNet.compute(pair.getInput());
             log.info(printResult(pair, output));
         }
@@ -87,9 +108,10 @@ public class DecoupledNetClassification {
     private DecoupledNet createNet() {
         List<BasicLayer> basicLayers = new ArrayList<>();
         basicLayers.add(new BasicLayer(null, false, 9));
-        basicLayers.add(new BasicLayer(new ActivationSigmoid(), false, 18));
+        basicLayers.add(new BasicLayer(new ActivationSigmoid(), false, 9));
         basicLayers.add(new BasicLayer(null, false, 9));
         DecoupledNet decoupledNet = new DecoupledNet(basicLayers);
+        //decouple(decoupledNet);
         return decoupledNet;
     }
 
@@ -102,13 +124,101 @@ public class DecoupledNetClassification {
             inputData.append(pair.getInput().getData(i) + " | ");
         }
         for (int i = 0; i < output.getData().length; i++) {
-            outputData.append((Math.round(output.getData(i)*10)/10.0)+ " | ");
+            String outputStr = String.valueOf((Math.round(output.getData(i) * 10) / 10.0));
+            if (!outputStr.startsWith("-")) {
+                outputStr = " " + outputStr;
+            }
+            outputData.append(outputStr + " | ");
         }
         for (int i = 0; i < pair.getIdeal().getData().length; i++) {
             idealData.append(pair.getIdeal().getData(i) + " | ");
         }
-        String result = ("input=" + inputData.toString()
-                + " actual=" + outputData.toString() + " ideal=" + idealData.toString());
+        String result = ("input= " + inputData.toString()
+                + " actual= " + outputData.toString() + " ideal= " + idealData.toString());
         return result;
+    }
+
+    private void decouple(DecoupledNet decoupledNet){
+        //0
+        decoupledNet.disableConnection(0, 0, 1);
+        decoupledNet.disableConnection(0, 0, 2);
+        decoupledNet.disableConnection(0, 0, 3);
+        decoupledNet.disableConnection(0, 0, 4);
+        decoupledNet.disableConnection(0, 0, 5);
+        decoupledNet.disableConnection(0, 0, 6);
+        decoupledNet.disableConnection(0, 0, 7);
+        decoupledNet.disableConnection(0, 0, 8);
+        //1
+        decoupledNet.disableConnection(0, 1, 0);
+        decoupledNet.disableConnection(0, 1, 2);
+        decoupledNet.disableConnection(0, 1, 3);
+        decoupledNet.disableConnection(0, 1, 4);
+        decoupledNet.disableConnection(0, 1, 5);
+        decoupledNet.disableConnection(0, 1, 6);
+        decoupledNet.disableConnection(0, 1, 7);
+        decoupledNet.disableConnection(0, 1, 8);
+        //2
+        decoupledNet.disableConnection(0, 2, 0);
+        decoupledNet.disableConnection(0, 2, 1);
+        decoupledNet.disableConnection(0, 2, 3);
+        decoupledNet.disableConnection(0, 2, 4);
+        decoupledNet.disableConnection(0, 2, 5);
+        decoupledNet.disableConnection(0, 2, 6);
+        decoupledNet.disableConnection(0, 2, 7);
+        decoupledNet.disableConnection(0, 2, 8);
+        //3
+        decoupledNet.disableConnection(0, 3, 0);
+        decoupledNet.disableConnection(0, 3, 1);
+        decoupledNet.disableConnection(0, 3, 2);
+        decoupledNet.disableConnection(0, 3, 4);
+        decoupledNet.disableConnection(0, 3, 5);
+        decoupledNet.disableConnection(0, 3, 6);
+        decoupledNet.disableConnection(0, 3, 7);
+        decoupledNet.disableConnection(0, 3, 8);
+        //4
+        decoupledNet.disableConnection(0, 4, 0);
+        decoupledNet.disableConnection(0, 4, 1);
+        decoupledNet.disableConnection(0, 4, 2);
+        decoupledNet.disableConnection(0, 4, 3);
+        decoupledNet.disableConnection(0, 4, 5);
+        decoupledNet.disableConnection(0, 4, 6);
+        decoupledNet.disableConnection(0, 4, 7);
+        decoupledNet.disableConnection(0, 4, 8);
+        //5
+        decoupledNet.disableConnection(0, 5, 0);
+        decoupledNet.disableConnection(0, 5, 1);
+        decoupledNet.disableConnection(0, 5, 2);
+        decoupledNet.disableConnection(0, 5, 3);
+        decoupledNet.disableConnection(0, 5, 4);
+        decoupledNet.disableConnection(0, 5, 6);
+        decoupledNet.disableConnection(0, 5, 7);
+        decoupledNet.disableConnection(0, 5, 8);
+        //6
+        decoupledNet.disableConnection(0, 6, 0);
+        decoupledNet.disableConnection(0, 6, 1);
+        decoupledNet.disableConnection(0, 6, 2);
+        decoupledNet.disableConnection(0, 6, 3);
+        decoupledNet.disableConnection(0, 6, 4);
+        decoupledNet.disableConnection(0, 6, 5);
+        decoupledNet.disableConnection(0, 6, 7);
+        decoupledNet.disableConnection(0, 6, 8);
+        //7
+        decoupledNet.disableConnection(0, 7, 0);
+        decoupledNet.disableConnection(0, 7, 1);
+        decoupledNet.disableConnection(0, 7, 2);
+        decoupledNet.disableConnection(0, 7, 3);
+        decoupledNet.disableConnection(0, 7, 4);
+        decoupledNet.disableConnection(0, 7, 5);
+        decoupledNet.disableConnection(0, 7, 6);
+        decoupledNet.disableConnection(0, 7, 8);
+        //8
+        decoupledNet.disableConnection(0, 8, 0);
+        decoupledNet.disableConnection(0, 8, 1);
+        decoupledNet.disableConnection(0, 8, 2);
+        decoupledNet.disableConnection(0, 8, 3);
+        decoupledNet.disableConnection(0, 8, 4);
+        decoupledNet.disableConnection(0, 8, 5);
+        decoupledNet.disableConnection(0, 8, 6);
+        decoupledNet.disableConnection(0, 8, 7);
     }
 }

@@ -19,6 +19,8 @@ public class DecoupledNet extends BasicNetwork {
         for(BasicLayer layer : layerList){
             this.addLayer(layer);
         }
+        this.getStructure().finalizeStructure();
+        this.reset();
     }
 
     public void disableConnection(int fromLayer, int fromNeuron, int toNeuron){
