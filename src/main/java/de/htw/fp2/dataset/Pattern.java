@@ -50,7 +50,8 @@ public class Pattern implements Serializable {
         return true;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
         for (int row = 0; row < this.value.length; row++) {
