@@ -5,7 +5,7 @@ package de.htw.fp2.common;
  */
 public final class Constants {
 
-    public static final String TIME_FORMAT = "dd-MM-yyyy_HH:mm:ss";
+    public static final String TIME_FORMAT = "dd-MM-yyyy_HH-mm-ss";
     public static final String INPUTDIR = "input/";
     public static final String OUTPUTDIR = "output/";
     public static final String RESULTDIR = "results/";

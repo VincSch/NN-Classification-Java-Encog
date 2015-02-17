@@ -1,6 +1,7 @@
 package de.htw.fp2;
 
 import de.htw.fp2.common.BaseTester;
+import de.htw.fp2.network.DecoupledNet;
 import de.htw.fp2.network.classification.DecoupledNetClassification;
 import org.junit.After;
 import org.junit.Before;
@@ -25,7 +26,7 @@ public class DecoupledNetTest extends BaseTester {
 
     @Test
     public void testNetwork() {
-        DecoupledNetClassification decoupledNetClassification = new DecoupledNetClassification(false, 0.01, false);
+        DecoupledNetClassification decoupledNetClassification = new DecoupledNetClassification(false, DecoupledNet.Topology.Decoupled_9_18_9);
         assertTrue("Training should run without any Exceptions", decoupledNetClassification.train());
         assertTrue("Test should run without any Exceptions", decoupledNetClassification.test());
     }

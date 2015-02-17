@@ -25,6 +25,11 @@ public class DecoupledResilientPropagation extends ResilientPropagation {
         this.lastWeightChange = new double[network.getFlat().getWeights().length];
     }
 
+    /**
+     *
+     *
+     * */
+
     @Override
     public double updateWeightPlus(double[] gradients, double[] lastGradient, int index) {
         int change = EncogMath.sign(gradients[index] * lastGradient[index]);

@@ -28,12 +28,13 @@ public class DecoupledNetClassification {
     private NetworkDebugUtility networkDebugger;
     private NetworkTestUtility testUtility;
     private double error;
+    private static int MAX_EPOCHS = 2000;
 
-    public DecoupledNetClassification(boolean useDecoupledResilient) {
+    public DecoupledNetClassification(boolean useDecoupledResilient, DecoupledNet.Topology topology) {
         this.useDecoupledResilient = useDecoupledResilient;
         this.error = 0.01;
         trainingConfig = new TrainingConfigurationUtility();
-        this.decoupledNet = createBasicNet_9189();
+        this.decoupledNet = new DecoupledNet(topology);
 
         if (this.useDecoupledResilient)
             this.trainer = new DecoupledResilientPropagation(decoupledNet,
@@ -42,15 +43,16 @@ public class DecoupledNetClassification {
             this.trainer = new ResilientPropagation(decoupledNet,
                     trainingConfig.getTrainingSet());
 
-        networkDebugger = new NetworkDebugUtility(this.decoupledNet, this.trainer, false);
+        networkDebugger = new NetworkDebugUtility(this.decoupledNet, this.trainer, decoupledNet.getTopology());
         testUtility = new NetworkTestUtility(trainingConfig, decoupledNet);
     }
 
-    public DecoupledNetClassification(boolean useDecoupledResilient, double error, boolean showWeights) {
+    public DecoupledNetClassification(boolean useDecoupledResilient, DecoupledNet.Topology topology, double error, int max_epoch) {
         this.useDecoupledResilient = useDecoupledResilient;
         this.error = error;
+        MAX_EPOCHS = max_epoch;
         trainingConfig = new TrainingConfigurationUtility();
-        this.decoupledNet = createBasicNet_9189();
+        this.decoupledNet = new DecoupledNet(topology);
 
         if (this.useDecoupledResilient)
             this.trainer = new DecoupledResilientPropagation(decoupledNet,
@@ -59,7 +61,7 @@ public class DecoupledNetClassification {
             this.trainer = new ResilientPropagation(decoupledNet,
                     trainingConfig.getTrainingSet());
 
-        networkDebugger = new NetworkDebugUtility(this.decoupledNet, this.trainer, showWeights);
+        networkDebugger = new NetworkDebugUtility(this.decoupledNet, this.trainer, decoupledNet.getTopology());
         testUtility = new NetworkTestUtility(trainingConfig, decoupledNet);
     }
 
@@ -81,133 +83,15 @@ public class DecoupledNetClassification {
     public boolean train() {
         int epoch = 1;
         do {
+            decoupledNet.resetConnections();
             trainer.iteration();
+            decoupledNet.resetConnections();
             networkDebugger.iterationCallback(epoch);
             epoch++;
-        } while (trainer.getError() > error);
+        } while (trainer.getError() > error && epoch < MAX_EPOCHS);
         trainer.finishTraining();
         networkDebugger.generateTrainingReports();
         return true;
-    }
-
-    private DecoupledNet createBasicNet_9189() {
-        List<BasicLayer> basicLayers = new ArrayList<>();
-        basicLayers.add(new BasicLayer(null, false, 9));
-        basicLayers.add(new BasicLayer(new ActivationSigmoid(), false, 18));
-        basicLayers.add(new BasicLayer(null, false, 9));
-        DecoupledNet decoupledNet = new DecoupledNet(basicLayers);
-        return decoupledNet;
-    }
-
-    private DecoupledNet createPartlyDecoupledNet_9189() {
-        List<BasicLayer> basicLayers = new ArrayList<>();
-        basicLayers.add(new BasicLayer(null, false, 9));
-        basicLayers.add(new BasicLayer(new ActivationSigmoid(), false, 18));
-        basicLayers.add(new BasicLayer(null, false, 9));
-        DecoupledNet decoupledNet = new DecoupledNet(basicLayers);
-
-        //input to hidden
-        for (int i = 1; i >= 18; i++) {
-            if (i != 1)
-                decoupledNet.disableConnection(0, 0, i);
-        }
-        for (int i = 0; i >= 17; i++) {
-            if (i != 3)
-                decoupledNet.disableConnection(0, 1, i);
-        }
-
-        for (int i = 0; i >= 17; i++) {
-            if (i != 5)
-                decoupledNet.disableConnection(0, 2, i);
-        }
-
-        for (int i = 0; i >= 17; i++) {
-            if (i != 7)
-                decoupledNet.disableConnection(0, 3, i);
-        }
-
-        for (int i = 0; i >= 17; i++) {
-            if (i != 9)
-                decoupledNet.disableConnection(0, 4, i);
-        }
-
-        for (int i = 0; i >= 11; i++) {
-            if (i != 9)
-                decoupledNet.disableConnection(0, 5, i);
-        }
-
-        for (int i = 0; i >= 13; i++) {
-            if (i != 9)
-                decoupledNet.disableConnection(0, 6, i);
-        }
-
-        for (int i = 0; i >= 15; i++) {
-            if (i != 9)
-                decoupledNet.disableConnection(0, 7, i);
-        }
-        for (int i = 0; i >= 17; i++) {
-            if (i != 9)
-                decoupledNet.disableConnection(0, 8, i);
-        }
-
-
-        return decoupledNet;
-    }
-
-    private DecoupledNet createPartlyDecoupledNet_99189() {
-        List<BasicLayer> basicLayers = new ArrayList<>();
-        basicLayers.add(new BasicLayer(null, false, 9));
-        basicLayers.add(new BasicLayer(null, false, 9));
-        basicLayers.add(new BasicLayer(new ActivationSigmoid(), false, 18));
-        basicLayers.add(new BasicLayer(null, false, 9));
-        DecoupledNet decoupledNet = new DecoupledNet(basicLayers);
-
-        //input to hidden
-        for (int i = 1; i >= 18; i++) {
-            if (i != 1)
-                decoupledNet.disableConnection(1, 0, i);
-        }
-        for (int i = 0; i >= 17; i++) {
-            if (i != 3)
-                decoupledNet.disableConnection(1, 1, i);
-        }
-
-        for (int i = 0; i >= 17; i++) {
-            if (i != 5)
-                decoupledNet.disableConnection(1, 2, i);
-        }
-
-        for (int i = 0; i >= 17; i++) {
-            if (i != 7)
-                decoupledNet.disableConnection(1, 3, i);
-        }
-
-        for (int i = 0; i >= 17; i++) {
-            if (i != 9)
-                decoupledNet.disableConnection(1, 4, i);
-        }
-
-        for (int i = 0; i >= 11; i++) {
-            if (i != 9)
-                decoupledNet.disableConnection(1, 5, i);
-        }
-
-        for (int i = 0; i >= 13; i++) {
-            if (i != 9)
-                decoupledNet.disableConnection(1, 6, i);
-        }
-
-        for (int i = 0; i >= 15; i++) {
-            if (i != 9)
-                decoupledNet.disableConnection(1, 7, i);
-        }
-        for (int i = 0; i >= 17; i++) {
-            if (i != 9)
-                decoupledNet.disableConnection(1, 8, i);
-        }
-
-
-        return decoupledNet;
     }
 
 }

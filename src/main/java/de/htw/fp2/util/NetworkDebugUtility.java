@@ -1,6 +1,7 @@
 package de.htw.fp2.util;
 
 import de.htw.fp2.common.Constants;
+import de.htw.fp2.network.DecoupledNet;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.encog.ml.data.MLData;
@@ -30,13 +31,16 @@ public class NetworkDebugUtility {
     private StringBuffer csv;
     private StringBuffer testResults;
     private StringBuffer weights;
-    private boolean showWeights;
     private HtmlExportUtil htmlExportUtil;
+    private DecoupledNet.Topology topology;
 
-    public NetworkDebugUtility(BasicNetwork network, Propagation trainer, boolean showWeights) {
+    public NetworkDebugUtility(BasicNetwork network, Propagation trainer, DecoupledNet.Topology topology) {
         this.network = network;
         this.trainer = trainer;
-        this.showWeights = showWeights;
+        if (topology != null)
+            this.topology = topology;
+        else
+            this.topology = DecoupledNet.Topology.Not_Set;
         init();
     }
 
@@ -46,7 +50,7 @@ public class NetworkDebugUtility {
         weights = new StringBuffer();
         DateTime dt = new DateTime();
         DateTimeFormatter dtf = DateTimeFormat.forPattern(Constants.TIME_FORMAT);
-        fullDirectoryPath = Constants.RESULTDIR + dt.toString(dtf);
+        fullDirectoryPath = Constants.RESULTDIR + dt.toString(dtf) + "_Topology_" + topology.name();
         File directory = new File(fullDirectoryPath);
         directory.mkdir();
         String htmlReport = fullDirectoryPath + "/" + network.getClass().getSimpleName() + "_" + trainer.getClass().getSimpleName() + "_weights";
