@@ -8,6 +8,7 @@ import org.encog.neural.networks.training.propagation.resilient.ResilientPropaga
 /**
  * Created by vs on 2.01.15.
  */
+@Deprecated
 public class DecoupledResilientPropagation extends ResilientPropagation {
 
     private double maxStep;

@@ -7,13 +7,8 @@ import de.htw.fp2.util.NetworkDebugUtility;
 import de.htw.fp2.network.DecoupledNet;
 import org.apache.log4j.Logger;
 import org.encog.Encog;
-import org.encog.engine.network.activation.ActivationSigmoid;
-import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Vincent Schwarzer on 04.01.15.
@@ -83,9 +78,8 @@ public class DecoupledNetClassification {
     public boolean train() {
         int epoch = 1;
         do {
-            decoupledNet.resetConnections();
             trainer.iteration();
-            decoupledNet.resetConnections();
+            decoupledNet.resetDisabledConnections();
             networkDebugger.iterationCallback(epoch);
             epoch++;
         } while (trainer.getError() > error && epoch < MAX_EPOCHS);

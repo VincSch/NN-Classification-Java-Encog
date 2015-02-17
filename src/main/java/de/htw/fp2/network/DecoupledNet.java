@@ -20,7 +20,7 @@ public class DecoupledNet extends BasicNetwork {
         Basic_9_18_9, Basic_9_18_18_9, Basic_9_64_9,
         Decoupled_9_18_9, Decoupled_9_9_18_9, Decoupled_9_64_9,
         RandomDecoupled_9_18_9, RandomDecoupled_9_18_18_9, RandomDecoupled_9_64_9,
-        Not_Set
+        Not_Set, Test
     }
 
     public DecoupledNet(Topology topology) {
@@ -45,13 +45,14 @@ public class DecoupledNet extends BasicNetwork {
                 case Decoupled_9_9_18_9:
                     createPartlyDecoupledNet_99189();
                     break;
+                case Test:
+                    testTopology();
+                    break;
                 default:
                     createBasicNet_9189();
                     break;
             }
         }
-        this.getStructure().finalizeStructure();
-        this.reset();
     }
 
     public DecoupledNet(List<BasicLayer> layerList, Topology topology) {
@@ -60,11 +61,10 @@ public class DecoupledNet extends BasicNetwork {
         for (BasicLayer layer : layerList) {
             this.addLayer(layer);
         }
-        this.getStructure().finalizeStructure();
         this.reset();
     }
 
-    public void resetConnections() {
+    public void resetDisabledConnections() {
         for (Weight weight : ignoreWeights) {
             setWeight(weight.getFromLayer(), weight.getFromNeuron(), weight.getToNeuron(), NULL_VALUE);
         }
@@ -133,6 +133,8 @@ public class DecoupledNet extends BasicNetwork {
         for (BasicLayer layer : basicLayers) {
             this.addLayer(layer);
         }
+        this.getStructure().finalizeStructure();
+        this.reset();
     }
 
     private void createBasicNet_918189() {
@@ -144,6 +146,8 @@ public class DecoupledNet extends BasicNetwork {
         for (BasicLayer layer : basicLayers) {
             this.addLayer(layer);
         }
+        this.getStructure().finalizeStructure();
+        this.reset();
     }
 
     private void createPartlyDecoupledNet_9189() {
@@ -154,47 +158,50 @@ public class DecoupledNet extends BasicNetwork {
         for (BasicLayer layer : basicLayers) {
             this.addLayer(layer);
         }
+        this.getStructure().finalizeStructure();
+        this.reset();
 
         //input to hidden
-        for (int i = 1; i >= 18; i++) {
+        for (int i = 1; i <= 17; i++) {
             if (i != 1)
                 disableConnection(0, 0, i);
         }
-        for (int i = 0; i >= 17; i++) {
+
+        for (int i = 0; i <= 17; i++) {
             if (i != 3)
                 disableConnection(0, 1, i);
         }
 
-        for (int i = 0; i >= 17; i++) {
+        for (int i = 0; i <= 17; i++) {
             if (i != 5)
                 disableConnection(0, 2, i);
         }
 
-        for (int i = 0; i >= 17; i++) {
+        for (int i = 0; i <= 17; i++) {
             if (i != 7)
                 disableConnection(0, 3, i);
         }
 
-        for (int i = 0; i >= 17; i++) {
+        for (int i = 0; i <= 17; i++) {
             if (i != 9)
                 disableConnection(0, 4, i);
         }
 
-        for (int i = 0; i >= 11; i++) {
+        for (int i = 0; i <= 11; i++) {
             if (i != 9)
                 disableConnection(0, 5, i);
         }
 
-        for (int i = 0; i >= 13; i++) {
+        for (int i = 0; i <= 13; i++) {
             if (i != 9)
                 disableConnection(0, 6, i);
         }
 
-        for (int i = 0; i >= 15; i++) {
+        for (int i = 0; i <= 15; i++) {
             if (i != 9)
                 disableConnection(0, 7, i);
         }
-        for (int i = 0; i >= 17; i++) {
+        for (int i = 0; i <= 17; i++) {
             if (i != 9)
                 disableConnection(0, 8, i);
         }
@@ -209,49 +216,55 @@ public class DecoupledNet extends BasicNetwork {
         for (BasicLayer layer : basicLayers) {
             this.addLayer(layer);
         }
+        this.getStructure().finalizeStructure();
+        this.reset();
 
         //input to hidden
-        for (int i = 1; i >= 18; i++) {
+        for (int i = 1; i <= 18; i++) {
             if (i != 1)
                 disableConnection(1, 0, i);
         }
-        for (int i = 0; i >= 17; i++) {
+        for (int i = 0; i <= 17; i++) {
             if (i != 3)
                 disableConnection(1, 1, i);
         }
 
-        for (int i = 0; i >= 17; i++) {
+        for (int i = 0; i <= 17; i++) {
             if (i != 5)
                 disableConnection(1, 2, i);
         }
 
-        for (int i = 0; i >= 17; i++) {
+        for (int i = 0; i <= 17; i++) {
             if (i != 7)
                 disableConnection(1, 3, i);
         }
 
-        for (int i = 0; i >= 17; i++) {
+        for (int i = 0; i <= 17; i++) {
             if (i != 9)
                 disableConnection(1, 4, i);
         }
 
-        for (int i = 0; i >= 11; i++) {
+        for (int i = 0; i <= 11; i++) {
             if (i != 9)
                 disableConnection(1, 5, i);
         }
 
-        for (int i = 0; i >= 13; i++) {
+        for (int i = 0; i <= 13; i++) {
             if (i != 9)
                 disableConnection(1, 6, i);
         }
 
-        for (int i = 0; i >= 15; i++) {
+        for (int i = 0; i <= 15; i++) {
             if (i != 9)
                 disableConnection(1, 7, i);
         }
-        for (int i = 0; i >= 17; i++) {
+        for (int i = 0; i <= 17; i++) {
             if (i != 9)
                 disableConnection(1, 8, i);
         }
+    }
+
+    private void testTopology() {
+
     }
 }
