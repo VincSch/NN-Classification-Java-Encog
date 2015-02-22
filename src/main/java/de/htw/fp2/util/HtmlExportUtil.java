@@ -95,15 +95,21 @@ public class HtmlExportUtil {
         int[] neuronsPerLayer = network.getFlat().getLayerCounts();
 
         int iteration = neuronsPerLayer.length;
-        StringBuffer weightMatrixes = new StringBuffer();
 
+        int stopAt = 0;
+        int startAt = 0;
         for (int i = iteration - 1; i > 0; i--) {
-            //weightMatrixes.append("\nLayer: " + (i + 1));
             document.append("<h3>Layer " + Math.abs(new Integer(i - iteration)) + " zu Layer " + (Math.abs(new Integer(i - iteration)) + 1) + "</h4>");
             createTable(neuronsPerLayer[i]);
             int countOfWeights = neuronsPerLayer[i] * neuronsPerLayer[i - 1];
             int countInputNeurons = neuronsPerLayer[i];
-            int stopAt = weights.length - (countOfWeights + 1);
+            if (i == (iteration - 1)) {
+                startAt = weights.length;
+                stopAt = weights.length - countOfWeights;
+            } else {
+                startAt = stopAt;
+                stopAt = startAt - countOfWeights;
+            }
 
             List<String> weightScalar = new ArrayList<String>();
             int counter;
@@ -112,16 +118,15 @@ public class HtmlExportUtil {
             } else {
                 counter = neuronsPerLayer[i];
             }
-            for (int j = weights.length - 1; j >= stopAt; j--) {
+            for (int j = startAt - 1; j >= stopAt; j--) {
                 countInputNeurons--;
                 weightScalar.add(String.valueOf((Math.round(weights[j] * 10) / 10.0)));
-                //weightMatrixes.append("\n" + String.valueOf((Math.round(weights[j] * 10) / 10.0)));
                 if (countInputNeurons == 0) {
                     addRow(weightScalar, counter);
                     counter--;
                     countInputNeurons = neuronsPerLayer[i];
                     weightScalar.clear();
-                    //  weightMatrixes.append("\n ==============");
+
                 }
             }
             closeTable();

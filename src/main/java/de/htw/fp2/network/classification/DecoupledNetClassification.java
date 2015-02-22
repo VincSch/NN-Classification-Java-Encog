@@ -1,7 +1,6 @@
 package de.htw.fp2.network.classification;
 
 import de.htw.fp2.common.NetworkTestUtility;
-import de.htw.fp2.train.DecoupledResilientPropagation;
 import de.htw.fp2.train.common.TrainingConfigurationUtility;
 import de.htw.fp2.util.NetworkDebugUtility;
 import de.htw.fp2.network.DecoupledNet;
@@ -16,7 +15,6 @@ import org.encog.neural.networks.training.propagation.resilient.ResilientPropaga
 public class DecoupledNetClassification {
 
     private Logger log = Logger.getLogger(DecoupledNetClassification.class.getName());
-    private boolean useDecoupledResilient;
     private TrainingConfigurationUtility trainingConfig;
     private DecoupledNet decoupledNet;
     private Propagation trainer;
@@ -25,36 +23,26 @@ public class DecoupledNetClassification {
     private double error;
     private static int MAX_EPOCHS = 2000;
 
-    public DecoupledNetClassification(boolean useDecoupledResilient, DecoupledNet.Topology topology) {
-        this.useDecoupledResilient = useDecoupledResilient;
+    public DecoupledNetClassification(DecoupledNet.Topology topology) {
         this.error = 0.01;
         trainingConfig = new TrainingConfigurationUtility();
         this.decoupledNet = new DecoupledNet(topology);
 
-        if (this.useDecoupledResilient)
-            this.trainer = new DecoupledResilientPropagation(decoupledNet,
-                    trainingConfig.getTrainingSet());
-        else
-            this.trainer = new ResilientPropagation(decoupledNet,
-                    trainingConfig.getTrainingSet());
+        this.trainer = new ResilientPropagation(decoupledNet,
+                trainingConfig.getTrainingSet());
 
         networkDebugger = new NetworkDebugUtility(this.decoupledNet, this.trainer, decoupledNet.getTopology());
         testUtility = new NetworkTestUtility(trainingConfig, decoupledNet);
     }
 
-    public DecoupledNetClassification(boolean useDecoupledResilient, DecoupledNet.Topology topology, double error, int max_epoch) {
-        this.useDecoupledResilient = useDecoupledResilient;
+    public DecoupledNetClassification(DecoupledNet.Topology topology, double error, int max_epoch) {
         this.error = error;
         MAX_EPOCHS = max_epoch;
         trainingConfig = new TrainingConfigurationUtility();
         this.decoupledNet = new DecoupledNet(topology);
 
-        if (this.useDecoupledResilient)
-            this.trainer = new DecoupledResilientPropagation(decoupledNet,
-                    trainingConfig.getTrainingSet());
-        else
-            this.trainer = new ResilientPropagation(decoupledNet,
-                    trainingConfig.getTrainingSet());
+        this.trainer = new ResilientPropagation(decoupledNet,
+                trainingConfig.getTrainingSet());
 
         networkDebugger = new NetworkDebugUtility(this.decoupledNet, this.trainer, decoupledNet.getTopology());
         testUtility = new NetworkTestUtility(trainingConfig, decoupledNet);

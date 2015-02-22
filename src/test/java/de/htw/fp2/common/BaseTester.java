@@ -9,11 +9,15 @@ public class BaseTester {
 
     protected Logger log = Logger.getLogger(this.getClass().getCanonicalName());
 
-    protected void printStartTest(String testName){
-        log.info("#######################  " +"Start: "+ testName + "  #######################");
+    protected void printStartTest(String testName) {
+        log.info("#######################  " + "Start: " + testName + "  #######################");
     }
 
-    protected void printEndTest(String testName){
-        log.info("#######################  " +"End: "+ testName + "  #######################");
+    protected void printTestCase(String testName) {
+        log.info("----------------  " + "Test-Case: " + testName + "---------------");
+    }
+
+    protected void printEndTest(String testName) {
+        log.info("#######################  " + "End: " + testName + "  #######################");
     }
 }
