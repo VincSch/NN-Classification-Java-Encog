@@ -3,3 +3,10 @@ fp2-neuralnetwork-encog.iml
 .idea/
 target/
 results/
+.classpath
+
+.project
+
+.settings/org.eclipse.jdt.core.prefs
+
+.settings/org.eclipse.m2e.core.prefs
